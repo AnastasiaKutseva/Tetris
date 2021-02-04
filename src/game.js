@@ -21,8 +21,8 @@ export default class game{
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             
         ]; 
         
@@ -78,6 +78,49 @@ export default class game{
             return false;
         }
 
+        rotatePiece(){
+            this.rotateBlocks();
+            if(this.hasCollision()){
+                this.rotateBlocks(false);
+            }
+        }
+        rotateBlocks(clockwise = true){
+            const blocks = this.activePiece.blocks;
+            const lenght = blocks.lenght;
+            const x = Math.floor(lenght/2);
+            const y = lenght - 1;
+
+            for(let i = 0; i < x; i++){
+                for(let j = i; j < y - i; j++){
+                    const temp = blocks[i][j];
+
+                    if(clockwise){
+                        blocks[i][j] = blocks[y - j][i];
+                        blocks[y - j][i] = blocks[y -i][y - j];
+                        blocks[y - i][y - j] = blocks[j][y - i];
+                        blocks[j][y-i] = temp;   
+                    } else {
+                        blocks[i][j] = blocks[j][y - i];
+                        blocks[j][y - i] = blocks[y - i][y - j];
+                        blocks[y - i][y - j] = blocks[y - j][i];
+                        blocks[y - j][i] = temp;
+                    }
+                }
+            }
+        } 
+        hasCollision(){
+            const { y: pieceY, x: pieceX, blocks } = this.activePiece;
+            for(let y = 0; y < blocks.length; y++){
+                for(let x = 0; x < blocks[y].length; x++){
+                    if( blocks[y][x]  && //наличие блока в фигуре
+                        (( this.playfild[pieceY + y] === undefined ||this.playfild[pieceY + y][pieceX + x] === undefined ) ||
+                         this.playfild[pieceY + y][pieceX + x])){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         lockPiece(){
             const {y: pieceY, x: pieceX, blocks} = this.activePiece;
 
