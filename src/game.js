@@ -67,10 +67,11 @@ export default class game{
 
             for(let y = 0; y < blocks.length; y++){
                 for(let x = 0; x < blocks[y].length; x++){  
-                    if  ( blocks[y][x]  && //наличие блока в фигуре
-                        (( this.playfild[pieceY + y] === undefined ||this.playfild[pieceY + y][pieceX + x] === undefined ) ||
-                         this.playfild[pieceY + y][pieceX + x])){
-                        return true;
+                    if  ( 
+                        blocks[y][x]  && 
+                        (( this.playfild[pieceY + y] === undefined || this.playfild[pieceY + y][pieceX + x] === undefined ) ||
+                         this.playfild[pieceY + y][pieceX + x])
+                         ){ return true;
                     }
                 }
             }
@@ -80,7 +81,9 @@ export default class game{
 
         rotatePiece(){
             this.rotateBlocks();
-            if(this.hasCollision()){
+            // console.log('я работаю в rotatePiece');
+            if (this.hasCollision()){
+                // console.log('я блять работаю в rotatePiece в if');
                 this.rotateBlocks(false);
             }
         }
@@ -93,12 +96,12 @@ export default class game{
             for(let i = 0; i < x; i++){
                 for(let j = i; j < y - i; j++){
                     const temp = blocks[i][j];
-
+                        // console.log('я блять работаю');
                     if(clockwise){
                         blocks[i][j] = blocks[y - j][i];
                         blocks[y - j][i] = blocks[y -i][y - j];
                         blocks[y - i][y - j] = blocks[j][y - i];
-                        blocks[j][y-i] = temp;   
+                        blocks[j][y - i] = temp;   
                     } else {
                         blocks[i][j] = blocks[j][y - i];
                         blocks[j][y - i] = blocks[y - i][y - j];
@@ -109,10 +112,13 @@ export default class game{
             }
         } 
         hasCollision(){
+            // console.log('я блять работаю в hasCollosion');
             const { y: pieceY, x: pieceX, blocks } = this.activePiece;
             for(let y = 0; y < blocks.length; y++){
                 for(let x = 0; x < blocks[y].length; x++){
+                    console.log('я блять работаю в hasCollosion во втором цикле');
                     if( blocks[y][x]  && //наличие блока в фигуре
+                        // console.log('я блять работаю в hasCollosion в условии второго цикла')
                         (( this.playfild[pieceY + y] === undefined ||this.playfild[pieceY + y][pieceX + x] === undefined ) ||
                          this.playfild[pieceY + y][pieceX + x])){
                         return true;
