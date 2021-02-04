@@ -21,8 +21,8 @@ export default class game{
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             
         ]; 
         
@@ -61,7 +61,41 @@ export default class game{
                 this.lockPiece();
             }
         } 
+        rotatePiece(){
+            const blocks = this.activePiece.blocks;
+            const length = blocks.length;
 
+            const temp = [];
+            for (let i = 0; i < length; i++){
+                temp[i] = new Array(length).fill(0);
+            }
+
+            for (let y = 0; y < length; y++){
+                for (let x = 0; x < length; x++)
+                temp[x][y] = blocks[length - 1 - y][x];
+            }
+
+            this.activePiece.blocks = temp;
+
+            if(this.hasCollision()){
+                this.activePiece.blocks = blocks;
+            }
+        }
+        hasCollision(){
+            const {y: pieceY, x: pieceX, blocks} = this.activePiece;
+
+            for(let y = 0; y < blocks.length; y++){
+                for(let x = 0; x < blocks[y].length; x++){  
+                    if  ( blocks[y][x]  && 
+                        (( this.playfild[pieceY + y] === undefined ||this.playfild[pieceY + y][pieceX + x] === undefined ) ||
+                         this.playfild[pieceY + y][pieceX + x])){
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
         isPieceOutOfBounds(){ //метод, который определет положение фигуры в поле
             const {y: pieceY, x: pieceX, blocks} = this.activePiece;
 
