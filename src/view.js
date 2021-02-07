@@ -1,4 +1,4 @@
-export default class View{
+export default class View {
 
     static colors = {
         '1': 'cyan',
@@ -7,13 +7,13 @@ export default class View{
         '4': 'yellow',
         '5': 'greem',
         '6': 'purple',
-        '7': 'red',
+        '7': 'red'
     };
-    constructor(element, width, height, rows, columns){
+    constructor(element, width, height, rows, columns) {
         this.element = element;
         this.width = width;
         this.height = height;
-       
+
         this.canvas = document.createElement('canvas');
         this.canvas.width = this.width;
         this.canvas.height = this.height;
@@ -25,32 +25,32 @@ export default class View{
         this.element.appendChild(this.canvas);
     }
 
-    render({ playfild }){
+    render({ playfild }) {
         this.clearScreen();
         this.renderPlayfild(playfild);
     }
-    clearScreen(){
+    clearScreen() {
         this.context.clearRect(0, 0, this.width, this.height);
     }
-    renderPlayfild(playfild){
-        for(let y = 0; y < playfild.length; y++){
-            const line = playfild[y];
-    
-            for(let x = 0; x < line.length; x++){
-                const block = line[x];
-                
-                if(block){
+    renderPlayfild(playfild) {
+        for (let y = 0; y < playfild.length; y++) {
+            for (let x = 0; x < playfild[y].length; x++) {
+                const block = playfild[y][x];
+
+                if (block) {
+
                     this.renderBlock(x * this.blockWidth, y * this.blockHeight, this.blockHeight, this.blockWidth, View.colors[block]);
                 }
             }
-        } 
+        }
     }
-    renderBlock(x, y, width, height, color){
+
+    renderBlock(x, y, width, height, color) {
         this.context.fillStyle = color;
         this.context.strokeStyle = 'black';
         this.context.lineWidth = 2;
 
-        this.context.fillRect(x, y, width, height), color;
+        this.context.fillRect(x, y, width, height);
         this.context.strokeRect(x, y, width, height)
     }
-} 
+}

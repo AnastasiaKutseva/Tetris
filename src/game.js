@@ -1,17 +1,23 @@
-export default class game {
-    core = 0; //колличестов очков
-    lines = 0; //сколько линий удалять
-    level = 0; //уровни
-    playfild = this.createPlayfild(); //поле игры размером 10х20 будет предстваленно двумя массивами
-
-
-    // Активная фигура.
-    activePiece = this.createPiece();
+export default class Game {
+    static points = {
+        '1': 40,
+        '2': 100,
+        '3': 300,
+        '4': 1200
+    };
+    
+    score = 0; //колличестов очков
+    lines = 19; //сколько линий удалять
+    playfild = this.createPlayfild(); //поле игры размером 10х20 будет предстваленно двумя массивам
+    activePiece = this.createPiece();// активная фигура
     nextPiece = this.createPiece();
 
+    get level(){
+        return Math.floor(this.length * 0.1);
+    }
     getState() {
+        const playfild = this.createPlayfild();
         const { y: pieceY, x: pieceX, blocks } = this.activePiece;
-        const playfild = this.createPlayfild(); 
 
         for (let y = 0; y < this.playfild.length; y++) {
             playfild[y] = [];
@@ -44,12 +50,12 @@ export default class game {
         }
         return playfild;
     }
-    createPiece(){
+    createPiece() {
         const index = Math.floor(Math.random() * 7);
         const type = 'IJLOSTZ'[index];
         const piece = {}
 
-        switch(type){
+        switch (type) {
             case 'I':
                 piece.blocks = [
                     [0, 0, 0, 0],
@@ -102,16 +108,16 @@ export default class game {
                 ];
                 break;
             default:
-                throw new Error('Неизвестный тип фигуры :с'); 
+                throw new Error('Неизвестный тип фигуры :с');
         }
-        piece.x = Math.floor((10 - piece.blocks[0].length)/2);//фугура появляется в центре игрового поля
+        piece.x = Math.floor((10 - piece.blocks[0].length) / 2);//фугура появляется в центре игрового поля
         piece.y = -1;
         return piece;
     }
     movePieceLeft() { // сдвигает фигуру влево
         this.activePiece.x -= 1;
 
-        if (this.isPieceOutOfBounds()) {  //не даёт выйти фигуре из поля
+        if (this.hasCollision()) {  //не даёт выйти фигуре из поля
             this.activePiece.x += 1;
         }
     }
@@ -119,7 +125,7 @@ export default class game {
     movePieceRight() {// сдивгает фигуру вправо
         this.activePiece.x += 1;
 
-        if (this.isPieceOutOfBounds()) {
+        if (this.hasCollision()) {
             this.activePiece.x -= 1;
         }
     }
@@ -127,9 +133,11 @@ export default class game {
     movePieceDown() { //сдвигает фигуру вниз
         this.activePiece.y += 1;
 
-        if (this.isPieceOutOfBounds()) {
+        if (this.hasCollision()) {
             this.activePiece.y -= 1;
             this.lockPiece();
+            const clearedLines = this.clearLines();
+            this.updateScore(clearedLines);
             this.updatePieces();
         }
     }
@@ -195,7 +203,41 @@ export default class game {
             }
         }
     }
-    updatePieces(){
+    clearLines() {
+        const rows = 20;
+        const columns = 10;
+        let lines = [];
+
+        for (let y = rows - 1; y >= 0; y--) {
+            let numberOfBlocks = 0;
+
+            for (let x = 0; x < columns; x++) {
+                if (this.playfild[y][x]) {
+                    numberOfBlocks += 1;
+                }
+            }
+            if (numberOfBlocks === 0) {
+                break;
+            } else if (numberOfBlocks < columns) {
+                continue; //перейти на следующую итерацию цикла
+            } else if (numberOfBlocks === columns) {
+                lines.unshift(y);
+            }
+        }
+        for (let index of lines){
+            this.playfild.splice(index, 1);
+            this.playfild.unshift(new Array(columns).fill(0));
+        }
+        return lines.length;
+    }
+    updateScore(clearedLines){
+        if (clearedLines > 0){
+            this.score += Game.points[clearedLines] * (this.level + 1);
+            this.lines += clearedLines;
+            console.log(this.score, this.lines);
+        }
+    }
+    updatePieces() {
         this.activePiece = this.nextPiece;
         this.nextPiece = this.createPiece();
     }
