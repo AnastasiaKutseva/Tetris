@@ -6,15 +6,8 @@ export default class game {
 
 
     // Активная фигура.
-    activePiece = {
-        x: 0,
-        y: 0,
-        blocks: [
-            [0, 1, 0],
-            [1, 1, 1],
-            [0, 0, 0]
-        ]
-    };
+    activePiece = this.createPiece();
+    nextPiece = this.createPiece();
 
     getState() {
         const { y: pieceY, x: pieceX, blocks } = this.activePiece;
@@ -51,6 +44,70 @@ export default class game {
         }
         return playfild;
     }
+    createPiece(){
+        const index = Math.floor(Math.random() * 7);
+        const type = 'IJLOSTZ'[index];
+        const piece = {}
+
+        switch(type){
+            case 'I':
+                piece.blocks = [
+                    [0, 0, 0, 0],
+                    [1, 1, 1, 1],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ];
+                break;
+            case 'J':
+                piece.blocks = [
+                    [0, 0, 0],
+                    [2, 2, 2],
+                    [0, 0, 2]
+                ];
+                break;
+            case 'L':
+                piece.blocks = [
+                    [0, 0, 0],
+                    [3, 3, 3],
+                    [3, 0, 0]
+                ];
+                break;
+            case 'O':
+                piece.blocks = [
+                    [0, 0, 0, 0],
+                    [0, 4, 4, 0],
+                    [0, 4, 4, 0],
+                    [0, 0, 0, 0]
+                ];
+                break;
+            case 'S':
+                piece.blocks = [
+                    [0, 0, 0],
+                    [0, 5, 5],
+                    [5, 5, 0]
+                ];
+                break;
+            case 'T':
+                piece.blocks = [
+                    [0, 0, 0],
+                    [6, 6, 6],
+                    [0, 6, 0]
+                ];
+                break;
+            case 'Z':
+                piece.blocks = [
+                    [0, 0, 0],
+                    [7, 7, 0],
+                    [0, 7, 7]
+                ];
+                break;
+            default:
+                throw new Error('Неизвестный тип фигуры :с'); 
+        }
+        piece.x = Math.floor((10 - piece.blocks[0].length)/2);//фугура появляется в центре игрового поля
+        piece.y = -1;
+        return piece;
+    }
     movePieceLeft() { // сдвигает фигуру влево
         this.activePiece.x -= 1;
 
@@ -73,6 +130,7 @@ export default class game {
         if (this.isPieceOutOfBounds()) {
             this.activePiece.y -= 1;
             this.lockPiece();
+            this.updatePieces();
         }
     }
     rotatePiece() { // поворачивает фигуру
@@ -136,6 +194,10 @@ export default class game {
                 }
             }
         }
+    }
+    updatePieces(){
+        this.activePiece = this.nextPiece;
+        this.nextPiece = this.createPiece();
     }
 }
 
