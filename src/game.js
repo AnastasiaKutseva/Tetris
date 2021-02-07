@@ -7,14 +7,16 @@ export default class Game {
     };
     
     score = 0; //колличестов очков
-    lines = 19; //сколько линий удалять
+    lines = 0; //сколько линий удалять
     playfild = this.createPlayfild(); //поле игры размером 10х20 будет предстваленно двумя массивам
     activePiece = this.createPiece();// активная фигура
     nextPiece = this.createPiece();
 
     get level(){
-        return Math.floor(this.length * 0.1);
+        return Math.floor(this.lines * 0.1);
+        // return ++this.level2;
     }
+
     getState() {
         const playfild = this.createPlayfild();
         const { y: pieceY, x: pieceX, blocks } = this.activePiece;
@@ -234,7 +236,6 @@ export default class Game {
         if (clearedLines > 0){
             this.score += Game.points[clearedLines] * (this.level + 1);
             this.lines += clearedLines;
-            console.log(this.score, this.lines);
         }
     }
     updatePieces() {
