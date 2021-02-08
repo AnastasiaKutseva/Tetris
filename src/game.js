@@ -6,15 +6,13 @@ export default class Game {
         '4': 1200
     };
     
-    score = 0; //колличестов очков
-    lines = 0; //сколько линий удалять
-    playfild = this.createPlayfild(); //поле игры размером 10х20 будет предстваленно двумя массивам
-    activePiece = this.createPiece();// активная фигура
-    nextPiece = this.createPiece();
+    constructor(){
+        this.reset();
+    }
 
     get level(){
         return Math.floor(this.lines * 0.1);
-        // return ++this.level2;
+        
     }
 
     getState() {
@@ -42,9 +40,19 @@ export default class Game {
             level: this.level, 
             lines: this.lines,
             nextPiece: this.nextPiece,
+            isGameOver: this.topOut,
             playfild
         
         };
+    }
+    reset(){
+        this.score = 0; //колличестов очков
+        this.lines = 0; //сколько линий удалять
+        this.topOut = false;
+        this.playfild = this.createPlayfild(); //поле игры размером 10х20 будет предстваленно двумя массивам
+        this.activePiece = this.createPiece();// активная фигура
+        this.nextPiece = this.createPiece();
+    
     }
 
     createPlayfild() { //создает массив для игрового поля
@@ -132,6 +140,7 @@ export default class Game {
     }
 
     movePieceRight() {// сдивгает фигуру вправо
+        if(this.topOut) return;
         this.activePiece.x += 1;
 
         if (this.hasCollision()) {
@@ -140,6 +149,7 @@ export default class Game {
     }
 
     movePieceDown() { //сдвигает фигуру вниз
+        if(this.topOut) return;
         this.activePiece.y += 1;
 
         if (this.hasCollision()) {
@@ -148,6 +158,10 @@ export default class Game {
             const clearedLines = this.clearLines();
             this.updateScore(clearedLines);
             this.updatePieces();
+        }
+
+        if (this.hasCollision()){
+            this.topOut = true;
         }
     }
     rotatePiece() { // поворачивает фигуру

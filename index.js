@@ -14,4 +14,4 @@ window.controller = controller;
 
 
 
-view.renderMainScreen(game.getState());
+
