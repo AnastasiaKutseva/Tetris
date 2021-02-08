@@ -37,7 +37,14 @@ export default class Game {
             }
 
         }
-        return { playfild };
+        return { 
+            score: this.score,
+            level: this.level, 
+            lines: this.lines,
+            nextPiece: this.nextPiece,
+            playfild
+        
+        };
     }
 
     createPlayfild() { //создает массив для игрового поля

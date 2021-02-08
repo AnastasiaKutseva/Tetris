@@ -5,14 +5,18 @@ body {
 }
 
 #root{
-    padding:3rem;
+    padding:2rem;
     text-align: center;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 600;
+    font-family: 'Press Start 2P', sans-serif;
+    
 }
 
 #root canvas{
     margin: 0 auto;
     display: block;
-    border: 4px solid white;
+}
+
+span{
+padding-left:10px;
+
 }
